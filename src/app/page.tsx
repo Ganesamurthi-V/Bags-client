@@ -120,26 +120,32 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative w-full overflow-hidden bg-primary/5 pt-12 pb-24 md:pt-16 md:pb-32">
-        <div className="container mx-auto px-4 md:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div ref={heroTextRef} className="flex flex-col gap-6">
+      {/* Hero Scroll Wrapper */}
+      <div id="hero-scroll-wrapper" className="relative w-full h-[200vh]">
+        <section id="hero-section" ref={heroRef} className="sticky top-0 w-full h-[100vh] overflow-hidden bg-primary/5 flex flex-col items-center justify-center">
+          {/* Background Arc Cards */}
+          <div className="absolute inset-0 z-0 pointer-events-none">
+            <HeroBags />
+          </div>
+
+          {/* Centralized Text Content */}
+          <div className="container relative z-10 mx-auto px-4 text-center max-w-4xl">
+            <div ref={heroTextRef} className="flex flex-col items-center gap-6">
               <span className="font-heading text-6xl md:text-7xl lg:text-8xl leading-none text-primary tracking-tight">
                 Purple Bags
               </span>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground/90 leading-tight max-w-xl">
+              <h1 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold tracking-tight text-foreground/90 leading-tight">
                 Custom Wedding Bags Crafted For Your Special Day
               </h1>
               <p className="text-xl text-primary font-heading italic">
                 Elegance in Every Stitch.
               </p>
-              <p className="text-lg text-muted-foreground max-w-lg">
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Premium customized wedding bags designed with your names, wedding
                 dates, logos, and unique artwork to make every celebration
                 unforgettable.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-4">
+              <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center pointer-events-auto">
                 <Link href="/contact" className={buttonVariants({ size: "lg" })}>
                   Request Quote
                 </Link>
@@ -151,12 +157,9 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="relative aspect-square md:aspect-[4/3] w-full h-[400px] md:h-[500px] lg:h-[600px]">
-              <HeroBags />
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       {/* Trust Metrics Banner */}
       <section className="border-y bg-zinc-50 dark:bg-zinc-950 py-8">

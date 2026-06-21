@@ -2,167 +2,120 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Exact coordinates mapped to the user's sketch (using viewport width/height percentages for responsiveness)
+const CARDS = [
+  // 1. Lower Left
+  { id: 1, src: "/images/collection-jute-1.jpg", destX: -40, destY: 35, rotate: -20, scale: 0.85 },
+  // 2. Middle Left
+  { id: 2, src: "/images/collection-cotton-1.jpg", destX: -45, destY: 5, rotate: -15, scale: 0.9 },
+  // 3. Upper Left
+  { id: 3, src: "/images/about-1.jpg", destX: -28, destY: -32, rotate: -8, scale: 0.95 },
+  // 4. Top Center (Hero/Featured)
+  { id: 4, src: "/images/purple-bag1.png", destX: 0, destY: -40, rotate: 0, scale: 1.0 },
+  // 5. Upper Right
+  { id: 5, src: "/images/purple-bag2.png", destX: 28, destY: -32, rotate: 8, scale: 0.95 },
+  // 6. Middle Right
+  { id: 6, src: "/images/hero-1.jpg", destX: 45, destY: 5, rotate: 15, scale: 0.9 },
+  // 7. Lower Right
+  { id: 7, src: "/images/collection-premium-1.jpg", destX: 40, destY: 35, rotate: 20, scale: 0.85 },
+];
+
 export function HeroBags() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [mounted, setMounted] = useState(false);
-
-  // Mouse Parallax
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springConfig = { damping: 25, stiffness: 150, mass: 0.5 };
-  const smoothMouseX = useSpring(mouseX, springConfig);
-  const smoothMouseY = useSpring(mouseY, springConfig);
-
-  // Parallax offsets (front bag moves opposite to back bag for depth)
-  const bag1OffsetX = useTransform(smoothMouseX, [-0.5, 0.5], [15, -15]);
-  const bag1OffsetY = useTransform(smoothMouseY, [-0.5, 0.5], [15, -15]);
-
-  const bag2OffsetX = useTransform(smoothMouseX, [-0.5, 0.5], [-20, 20]);
-  const bag2OffsetY = useTransform(smoothMouseY, [-0.5, 0.5], [-20, 20]);
 
   useEffect(() => {
     setMounted(true);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      // Normalize mouse position between -0.5 and 0.5
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      mouseX.set(x);
-      mouseY.set(y);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, []);
 
   useEffect(() => {
     if (!mounted || !containerRef.current) return;
 
-    // GSAP Entrance Animations
-    const bags = containerRef.current.querySelectorAll(".hero-bag-container");
-    gsap.fromTo(
-      bags,
-      { opacity: 0, y: 80, scale: 0.9 },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 1.4,
-        stagger: 0.2,
-        ease: "power3.out",
-        delay: 0.2,
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
+          trigger: document.getElementById("hero-scroll-wrapper"),
+          start: "top top", // Starts animating when the wrapper hits the top
+          end: "bottom bottom", // Finishes animating when the wrapper leaves the viewport
+          scrub: 1.2, // Smooth scrubbing
+          // Removed pin: true as it is now handled by native CSS sticky
         },
-      }
-    );
+      });
 
-    // GSAP subtle entrance for glows
-    const glows = containerRef.current.querySelectorAll(".hero-bag-glow");
-    gsap.fromTo(
-      glows,
-      { opacity: 0, scale: 0.5 },
-      { opacity: 1, scale: 1, duration: 2, ease: "power2.out", delay: 0.4 }
-    );
+      // The surrounding cards scatter outward from the center
+      cardsRef.current.forEach((card, index) => {
+        if (!card) return;
+        const data = CARDS[index];
+        
+        // Calculate the absolute pixel destination based on viewport width/height
+        const destX = (data.destX / 100) * window.innerWidth;
+        const destY = (data.destY / 100) * window.innerHeight;
+
+        // Animate from center (x:0, y:0) to the scattered positions
+        tl.to(
+          card,
+          {
+            x: destX,
+            y: destY,
+            opacity: 1,
+            rotate: data.rotate,
+            ease: "power2.out",
+          },
+          index * 0.05 // Stagger out organically
+        );
+
+        // Add a gentle floating continuous animation that operates independently of scroll
+        gsap.to(card.querySelector(".card-inner"), {
+          y: "-=15",
+          rotation: "+=2",
+          duration: 4 + index,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
   }, [mounted]);
 
   if (!mounted) return null;
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full min-h-[400px] flex items-center justify-center pointer-events-none"
-    >
-      {/* Background Soft Purple Glow */}
-      <div className="hero-bag-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-purple-500/20 rounded-full blur-[80px] -z-10" />
+    <div ref={containerRef} className="absolute inset-0 w-full h-full overflow-hidden perspective-[1000px] flex items-center justify-center">
+      {/* Soft Purple Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-purple-400/10 rounded-full blur-[120px] -z-10" />
 
-      {/* Bag 2 (Back / Offset) */}
-      <motion.div
-        style={{
-          x: bag2OffsetX,
-          y: bag2OffsetY,
-        }}
-        className="hero-bag-container absolute top-[5%] md:top-[10%] right-[20%] md:right-[35%] w-[55%] md:w-[45%] aspect-square pointer-events-auto"
-      >
-        <div className="absolute inset-0 bg-purple-400/10 blur-[40px] rounded-full scale-75" />
-        <motion.div
-          animate={{
-            y: [-8, 8, -8],
-            rotate: [-1, 1.5, -1],
+      {CARDS.map((card, index) => (
+        <div
+          key={card.id}
+          ref={(el) => {
+            cardsRef.current[index] = el;
           }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 z-0 pointer-events-auto"
+          style={{ 
+            // All cards start stacked precisely in the center
+            transform: `translate(-50%, -50%) scale(${card.scale}) rotate(0deg)` 
           }}
-          whileHover={{ scale: 1.05 }}
-          className="relative w-full h-full cursor-pointer group"
         >
-          <Image
-            src="/images/purple-bag2.png"
-            alt="Purple Custom Bag Back"
-            fill
-            className="object-contain drop-shadow-2xl transition-transform duration-500"
-            sizes="(max-width: 768px) 55vw, 45vw"
-            priority
-          />
-          {/* Subtle animated shadow under bag */}
-          <motion.div 
-            animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.2, 0.3] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[60%] h-4 bg-black/20 blur-lg rounded-full"
-          />
-        </motion.div>
-      </motion.div>
-
-      {/* Bag 1 (Front / Main) */}
-      <motion.div
-        style={{
-          x: bag1OffsetX,
-          y: bag1OffsetY,
-        }}
-        className="hero-bag-container absolute bottom-[5%] md:bottom-[10%] right-0 md:right-[5%] w-[65%] md:w-[55%] aspect-square z-10 pointer-events-auto"
-      >
-        <div className="absolute inset-0 bg-purple-600/15 blur-[50px] rounded-full scale-75 translate-y-10" />
-        <motion.div
-          animate={{
-            y: [12, -12, 12],
-            rotate: [1.5, -1.5, 1.5],
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          whileHover={{ scale: 1.05 }}
-          className="relative w-full h-full cursor-pointer"
-        >
-          <Image
-            src="/images/purple-bag1.png"
-            alt="Purple Custom Bag Front"
-            fill
-            className="object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
-            sizes="(max-width: 768px) 65vw, 55vw"
-            priority
-          />
-          {/* Subtle animated shadow under bag */}
-          <motion.div 
-            animate={{ scale: [1, 0.9, 1], opacity: [0.4, 0.25, 0.4] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-[70%] h-6 bg-black/30 blur-xl rounded-full"
-          />
-        </motion.div>
-      </motion.div>
+          <div className="card-inner relative w-[140px] md:w-[180px] lg:w-[240px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-white cursor-pointer hover:scale-110 transition-transform duration-300 hover:z-20">
+            <Image
+              src={card.src}
+              alt={`Purple Bag Highlight ${card.id}`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 160px, 280px"
+              priority={index < 3}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
