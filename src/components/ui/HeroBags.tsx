@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import gsap from "gsap";
 
 interface CardDef {
   id: number;
@@ -95,63 +96,131 @@ const CARDS: CardDef[] = [
   }
 ];
 
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.8, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.08 + 0.1,
-      duration: 0.6,
-      ease: [0.25, 0.1, 0.25, 1] as const,
-    },
-  }),
-};
-
-function HeroCard({ card, index }: { card: CardDef; index: number }) {
-  return (
-    <motion.div
-      custom={index}
-      initial="hidden"
-      animate="visible"
-      variants={cardVariants}
-      className="absolute pointer-events-auto"
-      style={{
-        left: `calc(50% + ${card.xOffset} * var(--cw))`,
-        top: `calc(15% + ${card.yOffset} * var(--cw))`,
-        translateX: "-50%",
-        translateY: "-50%",
-        rotate: card.rotate,
-        zIndex: card.zIndex,
-        width: card.width,
-      }}
-    >
-      <div
-        className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] shadow-2xl bg-white border-4 md:border-[6px] border-white cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_40px_rgba(120,60,180,0.25)]"
-        style={{ width: "100%", aspectRatio: card.aspectRatio }}
-      >
-        <Image
-          src={card.src}
-          alt={card.alt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 120px, 220px"
-          priority={true}
-        />
-      </div>
-    </motion.div>
-  );
-}
-
 export function HeroBags() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          startAnimation();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, []);
+
+  const startAnimation = () => {
+    const masterTl = gsap.timeline();
+
+    cardsRef.current.forEach((card, i) => {
+      if (!card) return;
+      const cardDef = CARDS[i];
+      const cardTl = gsap.timeline();
+
+      // Step 1: Train path to center (creates a sweeping curve)
+      cardTl.to(card, {
+        "--offsetX": 0,
+        duration: 1.2,
+        ease: "power2.out",
+      }, 0);
+      cardTl.to(card, {
+        "--offsetY": 0,
+        duration: 1.2,
+        ease: "power4.out",
+      }, 0);
+      cardTl.to(card, {
+        "--opacity": 1,
+        "--scale": 0.8,
+        "--rot": "0deg",
+        duration: 1.2,
+        ease: "power2.out",
+      }, 0);
+
+      // Step 2: Spread to scattered layout
+      cardTl.to(card, {
+        "--offsetX": cardDef.xOffset,
+        "--offsetY": cardDef.yOffset,
+        "--scale": 1,
+        "--rot": `${cardDef.rotate}deg`,
+        duration: 1.5,
+        ease: "power4.out",
+      }, 1.0);
+
+      // Add to master timeline with stagger
+      masterTl.add(cardTl, i * 0.18); // Delay between cards (0.15 - 0.25 range)
+    });
+
+    // Step 3: Subtle floating animation after all cards settle
+    masterTl.call(() => {
+      cardsRef.current.forEach((card, i) => {
+        if (!card) return;
+        const cardDef = CARDS[i];
+        gsap.to(card, {
+          "--offsetY": cardDef.yOffset - 0.015,
+          "--rot": `${cardDef.rotate + (i % 2 === 0 ? 1.5 : -1.5)}deg`,
+          duration: 2.5 + (i * 0.2),
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        });
+      });
+    });
+  };
+
   return (
     <div
+      ref={containerRef}
       className="absolute inset-0 w-full h-full pointer-events-none"
       style={{ "--cw": "min(100vw, 1400px)" } as React.CSSProperties}
     >
       {CARDS.map((card, i) => (
-        <HeroCard key={card.id} card={card} index={i} />
+        <div
+          key={card.id}
+          ref={(el) => {
+            cardsRef.current[i] = el;
+          }}
+          className="absolute pointer-events-auto"
+          style={{
+            left: "50%",
+            top: "15%",
+            zIndex: card.zIndex,
+            width: card.width,
+            // Initial off-screen states
+            "--offsetX": "0.5",
+            "--offsetY": "1",
+            "--rot": "45deg",
+            "--scale": "0.2",
+            "--opacity": "0",
+            opacity: "var(--opacity)",
+            transform: "translate(-50%, -50%) translate(calc(var(--offsetX) * var(--cw)), calc(var(--offsetY) * var(--cw))) rotate(var(--rot)) scale(var(--scale))",
+          } as React.CSSProperties}
+        >
+          <div
+            className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] shadow-2xl bg-white border-4 md:border-[6px] border-white cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_40px_rgba(120,60,180,0.25)]"
+            style={{ width: "100%", aspectRatio: card.aspectRatio }}
+          >
+            <Image
+              src={card.src}
+              alt={card.alt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 120px, 220px"
+              priority={true}
+            />
+          </div>
+        </div>
       ))}
     </div>
   );
