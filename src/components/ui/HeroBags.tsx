@@ -99,77 +99,60 @@ const CARDS: CardDef[] = [
 export function HeroBags() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const hasAnimated = useRef(false);
+  const floatRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    // Lock scrolling immediately so the user is pinned to the hero section
+    document.body.style.overflow = "hidden";
+    // Scroll to top just in case they refreshed halfway down
+    window.scrollTo({ top: 0, behavior: "instant" });
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          startAnimation();
-          observer.disconnect();
+    const ctx = gsap.context(() => {
+      const masterTl = gsap.timeline({
+        onComplete: () => {
+          // Unlock scrolling once all cards are revealed
+          document.body.style.overflow = "unset";
         }
-      },
-      { threshold: 0.1 }
-    );
+      });
 
-    observer.observe(container);
-
-    return () => observer.disconnect();
-  }, []);
-
-  const startAnimation = () => {
-    const masterTl = gsap.timeline();
-
-    cardsRef.current.forEach((card, i) => {
-      if (!card) return;
-      const cardDef = CARDS[i];
-      const cardTl = gsap.timeline();
-
-      // Step 1: Train path to center (creates a sweeping curve)
-      cardTl.to(card, {
-        "--offsetX": 0,
-        duration: 1.2,
-        ease: "power2.out",
-      }, 0);
-      cardTl.to(card, {
-        "--offsetY": 0,
-        duration: 1.2,
-        ease: "power4.out",
-      }, 0);
-      cardTl.to(card, {
-        "--opacity": 1,
-        "--scale": 0.8,
-        "--rot": "0deg",
-        duration: 1.2,
-        ease: "power2.out",
-      }, 0);
-
-      // Step 2: Spread to scattered layout
-      cardTl.to(card, {
-        "--offsetX": cardDef.xOffset,
-        "--offsetY": cardDef.yOffset,
-        "--scale": 1,
-        "--rot": `${cardDef.rotate}deg`,
-        duration: 1.5,
-        ease: "power4.out",
-      }, 1.0);
-
-      // Add to master timeline with stagger
-      masterTl.add(cardTl, i * 0.18); // Delay between cards (0.15 - 0.25 range)
-    });
-
-    // Step 3: Subtle floating animation after all cards settle
-    masterTl.call(() => {
       cardsRef.current.forEach((card, i) => {
         if (!card) return;
         const cardDef = CARDS[i];
-        gsap.to(card, {
-          "--offsetY": cardDef.yOffset - 0.015,
-          "--rot": `${cardDef.rotate + (i % 2 === 0 ? 1.5 : -1.5)}deg`,
+        const cardTl = gsap.timeline();
+
+        // ── Fast S-Curve (Snake) ──
+        cardTl.to(card, { "--offsetX": 0.4, duration: 0.6, ease: "sine.inOut" }, 0);
+        cardTl.to(card, { "--offsetX": 0, duration: 0.6, ease: "sine.inOut" }, 0.6);
+
+        cardTl.to(card, { "--offsetY": 0.5, duration: 0.6, ease: "power2.out" }, 0);
+        cardTl.to(card, { "--offsetY": 0, duration: 0.6, ease: "power2.in" }, 0.6);
+
+        cardTl.to(card, { "--rot": "30deg", duration: 0.6, ease: "sine.inOut" }, 0);
+        cardTl.to(card, { "--rot": "0deg", duration: 0.6, ease: "sine.inOut" }, 0.6);
+
+        cardTl.to(card, { "--opacity": 0.7, "--scale": 0.6, duration: 0.6, ease: "power1.in" }, 0);
+        cardTl.to(card, { "--opacity": 1, "--scale": 0.8, duration: 0.6, ease: "power1.out" }, 0.6);
+
+        // Spread out to scattered layout
+        cardTl.to(card, {
+          "--offsetX": cardDef.xOffset,
+          "--offsetY": cardDef.yOffset,
+          "--scale": 1,
+          "--rot": `${cardDef.rotate}deg`,
+          duration: 1.0,
+          ease: "power4.out",
+        }, 1.2);
+
+        // Add to master timeline with tighter stagger
+        masterTl.add(cardTl, i * 0.1); 
+      });
+
+      // Independent float
+      floatRefs.current.forEach((floatWrapper, i) => {
+        if (!floatWrapper) return;
+        gsap.to(floatWrapper, {
+          y: -12,
+          rotation: i % 2 === 0 ? 1.5 : -1.5,
           duration: 2.5 + (i * 0.2),
           ease: "sine.inOut",
           yoyo: true,
@@ -177,7 +160,12 @@ export function HeroBags() {
         });
       });
     });
-  };
+
+    return () => {
+      document.body.style.overflow = "unset";
+      ctx.revert();
+    };
+  }, []);
 
   return (
     <div
@@ -197,28 +185,31 @@ export function HeroBags() {
             top: "15%",
             zIndex: card.zIndex,
             width: card.width,
-            // Initial off-screen states
-            "--offsetX": "0.5",
-            "--offsetY": "1",
-            "--rot": "45deg",
-            "--scale": "0.2",
+            // Initial states: off-screen at bottom-left
+            "--offsetX": "-0.8",
+            "--offsetY": "1.2",
+            "--rot": "-60deg",
+            "--scale": "0.3",
             "--opacity": "0",
             opacity: "var(--opacity)",
             transform: "translate(-50%, -50%) translate(calc(var(--offsetX) * var(--cw)), calc(var(--offsetY) * var(--cw))) rotate(var(--rot)) scale(var(--scale))",
           } as React.CSSProperties}
         >
-          <div
-            className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] shadow-2xl bg-white border-4 md:border-[6px] border-white cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_40px_rgba(120,60,180,0.25)]"
-            style={{ width: "100%", aspectRatio: card.aspectRatio }}
-          >
-            <Image
-              src={card.src}
-              alt={card.alt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 120px, 220px"
-              priority={true}
-            />
+          {/* Inner wrapper for independent floating animation */}
+          <div ref={(el) => { floatRefs.current[i] = el; }} className="w-full h-full origin-center">
+            <div
+              className="relative overflow-hidden rounded-[1.5rem] md:rounded-[2rem] shadow-2xl bg-white border-4 md:border-[6px] border-white cursor-pointer transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_40px_rgba(120,60,180,0.25)]"
+              style={{ width: "100%", aspectRatio: card.aspectRatio }}
+            >
+              <Image
+                src={card.src}
+                alt={card.alt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 120px, 220px"
+                priority={true}
+              />
+            </div>
           </div>
         </div>
       ))}
