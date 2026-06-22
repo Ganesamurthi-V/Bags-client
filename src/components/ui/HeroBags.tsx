@@ -102,16 +102,15 @@ export function HeroBags() {
   const floatRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // Lock scrolling immediately so the user is pinned to the hero section
-    document.body.style.overflow = "hidden";
-    // Scroll to top just in case they refreshed halfway down
-    window.scrollTo({ top: 0, behavior: "instant" });
-
     const ctx = gsap.context(() => {
+      // 1. Master Timeline pinned to scroll
       const masterTl = gsap.timeline({
-        onComplete: () => {
-          // Unlock scrolling once all cards are revealed
-          document.body.style.overflow = "unset";
+        scrollTrigger: {
+          trigger: "#hero-section",
+          pin: true,
+          start: "top top",
+          end: "+=4000", // Massive scroll distance to stretch out the animation
+          scrub: 3, // Very high scrub for lazy smooth tracking
         }
       });
 
@@ -120,18 +119,22 @@ export function HeroBags() {
         const cardDef = CARDS[i];
         const cardTl = gsap.timeline();
 
-        // ── Fast S-Curve (Snake) ──
-        cardTl.to(card, { "--offsetX": 0.4, duration: 0.6, ease: "sine.inOut" }, 0);
-        cardTl.to(card, { "--offsetX": 0, duration: 0.6, ease: "sine.inOut" }, 0.6);
+        // ── Slow & Tight S-Curve (Snake) ──
+        // Start closer, move right gently, then to center
+        cardTl.to(card, { "--offsetX": 0.15, duration: 1.0, ease: "sine.inOut" }, 0);
+        cardTl.to(card, { "--offsetX": 0, duration: 1.0, ease: "sine.inOut" }, 1.0);
 
-        cardTl.to(card, { "--offsetY": 0.5, duration: 0.6, ease: "power2.out" }, 0);
-        cardTl.to(card, { "--offsetY": 0, duration: 0.6, ease: "power2.in" }, 0.6);
+        // Gentle arc up and down
+        cardTl.to(card, { "--offsetY": 0.3, duration: 1.0, ease: "power2.out" }, 0);
+        cardTl.to(card, { "--offsetY": 0, duration: 1.0, ease: "power2.in" }, 1.0);
 
-        cardTl.to(card, { "--rot": "30deg", duration: 0.6, ease: "sine.inOut" }, 0);
-        cardTl.to(card, { "--rot": "0deg", duration: 0.6, ease: "sine.inOut" }, 0.6);
+        // Gentle rotation
+        cardTl.to(card, { "--rot": "20deg", duration: 1.0, ease: "sine.inOut" }, 0);
+        cardTl.to(card, { "--rot": "0deg", duration: 1.0, ease: "sine.inOut" }, 1.0);
 
-        cardTl.to(card, { "--opacity": 0.7, "--scale": 0.6, duration: 0.6, ease: "power1.in" }, 0);
-        cardTl.to(card, { "--opacity": 1, "--scale": 0.8, duration: 0.6, ease: "power1.out" }, 0.6);
+        // Opacity and scale
+        cardTl.to(card, { "--opacity": 0.8, "--scale": 0.7, duration: 1.0, ease: "power1.in" }, 0);
+        cardTl.to(card, { "--opacity": 1, "--scale": 0.8, duration: 1.0, ease: "power1.out" }, 1.0);
 
         // Spread out to scattered layout
         cardTl.to(card, {
@@ -139,12 +142,12 @@ export function HeroBags() {
           "--offsetY": cardDef.yOffset,
           "--scale": 1,
           "--rot": `${cardDef.rotate}deg`,
-          duration: 1.0,
-          ease: "power4.out",
-        }, 1.2);
+          duration: 1.8,
+          ease: "power2.out", // smooth deceleration
+        }, 2.0);
 
-        // Add to master timeline with tighter stagger
-        masterTl.add(cardTl, i * 0.1); 
+        // Add to master timeline with standard stagger
+        masterTl.add(cardTl, i * 0.18); 
       });
 
       // Independent float
@@ -161,10 +164,7 @@ export function HeroBags() {
       });
     });
 
-    return () => {
-      document.body.style.overflow = "unset";
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (

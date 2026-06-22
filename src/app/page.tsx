@@ -111,7 +111,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen">
       {/* Hero Section — Matches Screenshot */}
       <div id="hero-section" className="relative w-full pt-8 md:pt-12 pb-16 flex flex-col items-center overflow-hidden bg-white dark:bg-zinc-950 z-10">
         
