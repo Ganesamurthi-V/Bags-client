@@ -38,7 +38,6 @@ const trustMetrics = [
   { stat: "7+ Years", label: "Experience" },
   { stat: "Own Unit", label: "Manufacturing" },
   { stat: "Pan India", label: "Delivery" },
-  { stat: "MOQ 100+", label: "Bags Minimum" },
 ];
 
 const whyChooseUs = [
@@ -113,42 +112,47 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Static Framed Hero Section */}
-      <section className="relative w-full h-screen min-h-[850px] overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center">
-        {/* Background Arc Cards */}
+      {/* Hero: HeroBags owns its 200vh sticky scroll container */}
+      <div className="relative w-full">
+        {/* Cards — sticky scroll reveal */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <HeroBags />
         </div>
 
-        {/* Centralized Text Content */}
-        <div className="container relative z-10 mx-auto px-4 text-center max-w-4xl pointer-events-none">
-          <div ref={heroTextRef} className="flex flex-col items-center gap-4">
-            <h1 className="font-heading text-7xl md:text-8xl lg:text-[8rem] leading-none text-primary tracking-tight drop-shadow-sm">
-              Purple Bags
-            </h1>
-            
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground/90 leading-snug max-w-2xl mx-auto">
-              Custom Wedding Bags Crafted For Your Special Day.
-            </h2>
-            
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-              Premium customized wedding bags designed with your names, wedding dates, logos, and unique artwork to make every celebration unforgettable.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 mt-6 justify-center pointer-events-auto">
-              <Link href="/contact" className={buttonVariants({ size: "lg", className: "rounded-full px-8 h-14 text-base shadow-lg" })}>
-                Request Quote
-              </Link>
-              <Link
-                href="/collections"
-                className={buttonVariants({ size: "lg", variant: "secondary", className: "rounded-full px-8 h-14 text-base bg-white border shadow-sm hover:bg-zinc-50 text-zinc-900" })}
-              >
-                Design Your Bag
-              </Link>
+        {/* Sticky text — stays centered while cards animate */}
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center pointer-events-none z-10">
+          <div className="container mx-auto px-4 text-center max-w-4xl">
+            <div ref={heroTextRef} className="flex flex-col items-center gap-4">
+              <h1 className="font-heading text-7xl md:text-8xl lg:text-[8rem] leading-none text-primary tracking-tight drop-shadow-sm">
+                Purple Bags
+              </h1>
+
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground/90 leading-snug max-w-2xl mx-auto">
+                Custom Wedding Bags Crafted For Your Special Day.
+              </h2>
+
+              <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                Premium customized wedding bags designed with your names, wedding dates, logos, and unique artwork to make every celebration unforgettable.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 mt-6 justify-center pointer-events-auto">
+                <Link href="/contact" className={buttonVariants({ size: "lg", className: "rounded-full px-8 h-14 text-base shadow-lg" })}>
+                  Request Quote
+                </Link>
+                <Link
+                  href="/collections"
+                  className={buttonVariants({ size: "lg", variant: "secondary", className: "rounded-full px-8 h-14 text-base bg-white border shadow-sm hover:bg-zinc-50 text-zinc-900" })}
+                >
+                  Design Your Bag
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+
+        {/* Spacer so HeroBags' 300vh scroll space is respected */}
+        <div className="h-[300vh] pointer-events-none" aria-hidden />
+      </div>
 
       {/* Trust Metrics Banner */}
       <section className="border-y bg-zinc-50 dark:bg-zinc-950 py-8">
