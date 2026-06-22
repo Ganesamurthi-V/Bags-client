@@ -8,11 +8,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, Truck, Factory, ShieldCheck, Star } from "lucide-react";
-<<<<<<< Updated upstream
 import { HeroBags } from "@/components/ui/HeroBags";
-=======
 import { ShaderBackground } from "@/components/ShaderBackground";
->>>>>>> Stashed changes
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -89,8 +86,6 @@ function FadeSection({ children, className }: { children: React.ReactNode; class
   );
 }
 
-<<<<<<< Updated upstream
-=======
 function AnimatedCounter({ value, suffix, text }: { value?: number; suffix?: string; text?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -121,7 +116,6 @@ function AnimatedCounter({ value, suffix, text }: { value?: number; suffix?: str
   return <span ref={ref}>0{suffix}</span>;
 }
 
->>>>>>> Stashed changes
 export default function Home() {
   const heroTextRef = useRef<HTMLDivElement>(null);
 
@@ -148,21 +142,15 @@ export default function Home() {
   }, []);
 
   return (
-<<<<<<< Updated upstream
-    <div className="min-h-screen">
-      {/* Hero Section — Matches Screenshot */}
-      <div id="hero-section" className="relative w-full pt-8 md:pt-12 pb-16 flex flex-col items-center overflow-hidden bg-white dark:bg-zinc-950 z-10">
+    <div className="min-h-screen relative">
+      <ShaderBackground />
+      {/* ── UNIFIED SECTIONS (Hero to Why Choose Us) ── */}
+      <div id="hero-section" className="relative w-full pt-8 md:pt-12 pb-16 flex flex-col items-center bg-transparent overflow-hidden z-10">
         
         {/* Arc of Cards */}
         <div className="relative w-full max-w-[1400px] h-[300px] md:h-[380px] lg:h-[460px] shrink-0">
           <HeroBags />
         </div>
-=======
-    <div className="min-h-screen relative">
-      <ShaderBackground />
-      {/* ── UNIFIED SECTIONS (Hero to Why Choose Us) ── */}
-      <div className="relative w-full bg-transparent overflow-hidden">
->>>>>>> Stashed changes
 
         {/* Text Block */}
         <div className="container mx-auto px-4 text-center max-w-3xl relative z-10 -mt-24 md:-mt-36 lg:-mt-42">
