@@ -112,36 +112,38 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero: HeroBags owns its 200vh sticky scroll container */}
-      <div className="relative w-full">
-        {/* Cards — sticky scroll reveal */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
-          <HeroBags />
-        </div>
+      {/* Hero — single viewport height */}
+      <div className="relative w-full h-screen overflow-hidden">
 
-        {/* Sticky text — stays centered while cards animate */}
-        <div className="sticky top-0 h-screen flex flex-col items-center justify-center pointer-events-none z-10">
-          <div className="container mx-auto px-4 text-center max-w-4xl">
-            <div ref={heroTextRef} className="flex flex-col items-center gap-4">
-              <h1 className="font-heading text-7xl md:text-8xl lg:text-[8rem] leading-none text-primary tracking-tight drop-shadow-sm">
+        {/* Cards arc — top 55% of viewport */}
+        <HeroBags />
+
+        {/* Text block — starts at 46%, sits cleanly below card arc */}
+        <div
+          className="absolute inset-x-0 z-10 flex flex-col items-center justify-start pointer-events-none"
+          style={{ top: "46%", bottom: 0 }}
+        >
+          <div className="container mx-auto px-4 text-center max-w-3xl">
+            <div ref={heroTextRef} className="flex flex-col items-center gap-2">
+              <h1 className="font-heading text-5xl md:text-6xl lg:text-[6.5rem] leading-none text-primary tracking-tight drop-shadow-sm">
                 Purple Bags
               </h1>
 
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground/90 leading-snug max-w-2xl mx-auto">
+              <h2 className="text-lg md:text-xl lg:text-2xl font-bold tracking-tight text-foreground/90 leading-snug max-w-2xl mx-auto">
                 Custom Wedding Bags Crafted For Your Special Day.
               </h2>
 
-              <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm md:text-sm text-muted-foreground max-w-lg mx-auto leading-relaxed">
                 Premium customized wedding bags designed with your names, wedding dates, logos, and unique artwork to make every celebration unforgettable.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mt-6 justify-center pointer-events-auto">
-                <Link href="/contact" className={buttonVariants({ size: "lg", className: "rounded-full px-8 h-14 text-base shadow-lg" })}>
+              <div className="flex flex-col sm:flex-row gap-3 mt-3 justify-center pointer-events-auto">
+                <Link href="/contact" className={buttonVariants({ size: "lg", className: "rounded-full px-8 h-11 text-sm shadow-lg" })}>
                   Request Quote
                 </Link>
                 <Link
                   href="/collections"
-                  className={buttonVariants({ size: "lg", variant: "secondary", className: "rounded-full px-8 h-14 text-base bg-white border shadow-sm hover:bg-zinc-50 text-zinc-900" })}
+                  className={buttonVariants({ size: "lg", variant: "secondary", className: "rounded-full px-8 h-11 text-sm bg-white border shadow-sm hover:bg-zinc-50 text-zinc-900" })}
                 >
                   Design Your Bag
                 </Link>
@@ -149,9 +151,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        {/* Spacer so HeroBags' 300vh scroll space is respected */}
-        <div className="h-[300vh] pointer-events-none" aria-hidden />
       </div>
 
       {/* Trust Metrics Banner */}
