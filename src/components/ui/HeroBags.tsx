@@ -10,48 +10,38 @@ import {
   MotionValue,
 } from "framer-motion";
 
-/**
- * TRAIN ANIMATION — all cars follow the same track with equal gaps.
- *
- * Shared arc track (8 waypoints):
- *   W0 (origin, off-screen bottom-left)
- *   → W1 (bottom-left)  → W2 (mid-left)  → W3 (upper-left)
- *   → W4 (top-center)
- *   → W5 (upper-right) → W6 (mid-right)  → W7 (bottom-right)
- *
- * Card 1 departs first — short journey to W1 (nearest station).
- * Card 2 follows with the same gap — travels W1 → parks at W2.
- * ...
- * Card 7 departs last — longest journey, parks at W7.
- *
- * Each arc segment has the SAME scroll duration = SEG (0.07),
- * so all cards move at equal visual speed → looks like a real train.
- */
 
 const W = [
-  { left: "-15vw", top: "92vh" }, // W0 — origin (off-screen bottom-left)
-  { left: "11vw",  top: "80vh" }, // W1 — bottom-left station
-  { left: "8vw",   top: "50vh" }, // W2 — mid-left station
-  { left: "18vw",  top: "18vh" }, // W3 — upper-left station
-  { left: "50vw",  top: "9vh"  }, // W4 — top-center station (peak)
-  { left: "82vw",  top: "18vh" }, // W5 — upper-right station
-  { left: "92vw",  top: "50vh" }, // W6 — mid-right station
-  { left: "88vw",  top: "80vh" }, // W7 — bottom-right station
+  { left: "50vw", top: "120vh" }, // W0 — origin (off-screen bottom)
+  { left: "25vw", top: "75vh"  }, // W1 — Lower Left 1
+  { left: "17vw", top: "61vh"  }, // W2 — Lower Left 2
+  { left: "15vw", top: "45vh"  }, // W3 — Mid Left
+  { left: "21vw", top: "29vh"  }, // W4 — Upper Left 1
+  { left: "34vw", top: "19vh"  }, // W5 — Upper Left 2
+  { left: "50vw", top: "15vh"  }, // W6 — Top Center
+  { left: "66vw", top: "19vh"  }, // W7 — Upper Right 2
+  { left: "79vw", top: "29vh"  }, // W8 — Upper Right 1
+  { left: "85vw", top: "45vh"  }, // W9 — Mid Right
+  { left: "83vw", top: "61vh"  }, // W10— Lower Right 2
+  { left: "75vw", top: "75vh"  }, // W11— Lower Right 1
 ];
 
-const SEG = 0.07; // scroll progress per arc segment (equal for all cards → equal speed)
-const GAP = 0.07; // departure gap between consecutive cards
+const SEG = 0.05; // scroll progress per arc segment
+const GAP = 0.04; // departure gap between consecutive cards
 
 // Card i departs at i*GAP and travels (i+1) segments to its stop W[i+1]
 const CARD_CONFIG = [
-  { id: 1, src: "/images/collection-jute-1.jpg",    stopIndex: 1, rotate: -20, startAt: 0 * GAP, endAt: 0 * GAP + 1 * SEG },
-  { id: 2, src: "/images/collection-cotton-1.jpg",  stopIndex: 2, rotate: -40, startAt: 1 * GAP, endAt: 1 * GAP + 2 * SEG },
-  { id: 3, src: "/images/about-1.jpg",              stopIndex: 3, rotate: -20, startAt: 2 * GAP, endAt: 2 * GAP + 3 * SEG },
-  { id: 4, src: "/images/purple-bag1.png",          stopIndex: 4, rotate:   0, startAt: 3 * GAP, endAt: 3 * GAP + 4 * SEG },
-  { id: 5, src: "/images/purple-bag2.png",          stopIndex: 5, rotate:  20, startAt: 4 * GAP, endAt: 4 * GAP + 5 * SEG },
-  { id: 6, src: "/images/hero-1.jpg",               stopIndex: 6, rotate:  40, startAt: 5 * GAP, endAt: 5 * GAP + 6 * SEG },
-  { id: 7, src: "/images/collection-premium-1.jpg", stopIndex: 7, rotate:  20, startAt: 6 * GAP, endAt: 6 * GAP + 7 * SEG },
-  // Last card ends at: 6*0.07 + 7*0.07 = 13*0.07 = 0.91 ✓ (fits inside 0-1 scroll range)
+  { id: 1,  src: "/images/collection-jute-1.jpg",    stopIndex: 1,  rotate: -50, startAt: 0 * GAP,  endAt: 0 * GAP + 1 * SEG },
+  { id: 2,  src: "/images/collection-cotton-1.jpg",  stopIndex: 2,  rotate: -40, startAt: 1 * GAP,  endAt: 1 * GAP + 2 * SEG },
+  { id: 3,  src: "/images/about-1.jpg",              stopIndex: 3,  rotate: -30, startAt: 2 * GAP,  endAt: 2 * GAP + 3 * SEG },
+  { id: 4,  src: "/images/purple-bag1.png",          stopIndex: 4,  rotate: -20, startAt: 3 * GAP,  endAt: 3 * GAP + 4 * SEG },
+  { id: 5,  src: "/images/gallery-1.jpg",            stopIndex: 5,  rotate: -10, startAt: 4 * GAP,  endAt: 4 * GAP + 5 * SEG },
+  { id: 6,  src: "/images/hero-1.jpg",               stopIndex: 6,  rotate: 0,   startAt: 5 * GAP,  endAt: 5 * GAP + 6 * SEG },
+  { id: 7,  src: "/images/collection-premium-1.jpg", stopIndex: 7,  rotate: 10,  startAt: 6 * GAP,  endAt: 6 * GAP + 7 * SEG },
+  { id: 8,  src: "/images/gallery-4.jpg",            stopIndex: 8,  rotate: 20,  startAt: 7 * GAP,  endAt: 7 * GAP + 8 * SEG },
+  { id: 9,  src: "/images/gallery-7.jpg",            stopIndex: 9,  rotate: 30,  startAt: 8 * GAP,  endAt: 8 * GAP + 9 * SEG },
+  { id: 10, src: "/images/gallery-10.jpg",           stopIndex: 10, rotate: 40,  startAt: 9 * GAP,  endAt: 9 * GAP + 10 * SEG },
+  { id: 11, src: "/images/purple-bag2.png",          stopIndex: 11, rotate: 50,  startAt: 10 * GAP, endAt: 10 * GAP + 11 * SEG },
 ];
 
 interface CardProps {
@@ -109,14 +99,14 @@ function AnimatedCard({ card, rawProgress, floatIndex }: CardProps) {
           delay: floatIndex * 0.25,
         }}
       >
-        <div className="relative w-[100px] md:w-[140px] lg:w-[175px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-white ring-2 ring-white/70 cursor-pointer hover:scale-105 hover:shadow-[0_20px_40px_rgba(120,60,180,0.3)] transition-all duration-500">
+        <div className="relative w-[70px] md:w-[100px] lg:w-[125px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-white ring-2 ring-white/70 cursor-pointer hover:scale-105 hover:shadow-[0_20px_40px_rgba(120,60,180,0.3)] transition-all duration-500">
           <Image
             src={card.src}
             alt={`Purple Bag ${card.id}`}
             fill
             className="object-cover"
-            sizes="(max-width: 768px) 100px, 175px"
-            priority={floatIndex < 2}
+            sizes="(max-width: 768px) 70px, 125px"
+            priority={floatIndex < 3}
           />
         </div>
       </motion.div>
