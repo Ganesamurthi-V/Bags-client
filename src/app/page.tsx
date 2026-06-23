@@ -159,7 +159,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="relative aspect-square md:aspect-[4/3] w-full h-[400px] md:h-[500px] lg:h-[600px]">
+            <div ref={heroImageRef} className="relative aspect-square md:aspect-[4/3] w-full h-[400px] md:h-[500px] lg:h-[600px]">
               <HeroBags />
             </div>
           </div>
@@ -172,10 +172,12 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg order-2 md:order-1">
               <Image
-                src="/images/about-1.jpg"
+                src="/purple-bag1.png"
                 alt="Purple Bags crafting process and manufacturing"
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
               />
             </div>
             <div className="flex flex-col gap-6 order-1 md:order-2">
@@ -231,6 +233,7 @@ export default function Home() {
                       src={collection.src}
                       alt={collection.alt}
                       fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>

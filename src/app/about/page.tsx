@@ -38,10 +38,11 @@ export default function About() {
           </div>
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
             <Image
-              src="/images/about-1.jpg"
+              src="/purple-bag1.png"
               alt="Purple Bags manufacturing and crafting process"
               fill
               className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
           </div>
@@ -55,7 +56,7 @@ export default function About() {
             { src: "/images/manufacturing-3.jpg", alt: "Finished wedding bags ready for delivery" },
           ].map(({ src, alt }) => (
             <div key={src} className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-md">
-              <Image src={src} alt={alt} fill className="object-cover" />
+              <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
             </div>
           ))}
         </div>
