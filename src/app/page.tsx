@@ -7,8 +7,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Truck, Factory, ShieldCheck, Star } from "lucide-react";
-import { HeroBags } from "@/components/ui/HeroBags";
+import { ArrowRight, CheckCircle2, Truck, Factory, ShieldCheck, Star, Users } from "lucide-react";
+// Removed HeroBags import since we are using Main_Background.png
+// import { HeroBags } from "@/components/ui/HeroBags";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,7 +35,7 @@ const featuredCollections = [
 ];
 
 const trustMetrics = [
-  { stat: "100+", label: "happy customer" },
+  { stat: "100+", label: "Happy Customers" },
   { stat: "7+ Years", label: "Experience" },
   { stat: "Pan India", label: "Delivery" },
 ];
@@ -87,7 +88,6 @@ function FadeSection({ children, className }: { children: React.ReactNode; class
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
-  const heroImageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -104,13 +104,6 @@ export default function Home() {
           delay: 0.2,
         }
       );
-
-      // Hero image scale-in
-      gsap.fromTo(
-        heroImageRef.current,
-        { opacity: 0, scale: 0.9 },
-        { opacity: 1, scale: 1, duration: 1, ease: "power2.out", delay: 0.4 }
-      );
     }, heroRef);
 
     return () => ctx.revert();
@@ -119,67 +112,99 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section ref={heroRef} className="relative w-full overflow-hidden bg-primary/5 pt-12 pb-24 md:pt-16 md:pb-32">
-        <div className="container mx-auto px-4 md:px-8">
+      <section ref={heroRef} className="relative w-full overflow-hidden min-h-[90vh] flex items-center pt-24 pb-24 md:pt-32 md:pb-32">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/Main_background.svg"
+            alt="Hero Background"
+            fill
+            className="object-cover object-center"
+            priority
+          />
+        </div>
+        
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div ref={heroTextRef} className="flex flex-col gap-6">
-              <span className="font-heading text-6xl md:text-7xl lg:text-8xl leading-none text-primary tracking-tight">
-                Purple Bags
+            <div ref={heroTextRef} className="flex flex-col gap-6 max-w-xl">
+              
+              <div className="flex flex-col gap-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-primary/80">
+                  Elegance in Every Stitch
+                </span>
+                <div className="w-12 h-[2px] bg-primary/60"></div>
+              </div>
+
+              <span className="font-heading text-6xl md:text-7xl lg:text-8xl leading-none tracking-tight">
+                <span className="text-primary">Purple</span> <span className="text-foreground/90">Bags</span>
               </span>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground/90 leading-tight max-w-xl">
-                Custom Wedding Bags Crafted For Your Special Day
+              
+              <h1 className="text-3xl md:text-4xl lg:text-[42px] font-medium tracking-tight text-foreground/80 leading-tight">
+                Custom Wedding Bags<br />Crafted For Your Special Day
               </h1>
-              <p className="text-xl text-primary font-heading italic">
-                Elegance in Every Stitch.
-              </p>
-              <p className="text-lg text-muted-foreground max-w-lg">
+              
+              <div className="flex items-center justify-start gap-3 text-primary/60 my-2">
+                <div className="h-[1px] w-16 bg-primary/30"></div>
+                <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 20C12 20 2.5 13 2.5 7.5C2.5 4.5 4.5 2.5 7.5 2.5C9.5 2.5 11 3.5 12 5.5C13 3.5 14.5 2.5 16.5 2.5C19.5 2.5 21.5 4.5 21.5 7.5C21.5 13 12 20 12 20Z" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                </svg>
+                <div className="h-[1px] w-16 bg-primary/30"></div>
+              </div>
+
+              <p className="text-base text-muted-foreground/90 max-w-md leading-relaxed">
                 Premium customized wedding bags designed with your names, wedding
                 dates, logos, and unique artwork to make every celebration
                 unforgettable.
               </p>
-              <div className="flex flex-wrap gap-6 md:gap-8 mt-2">
-                {trustMetrics.map(({ stat, label }) => (
-                  <div key={label} className="flex flex-col items-center text-center gap-0.5 font-heading">
-                    <span className="text-2xl md:text-3xl font-bold text-primary">{stat}</span>
-                    <span className="text-xs md:text-sm text-muted-foreground font-medium uppercase tracking-wider">
-                      {label}
-                    </span>
+              
+              <div className="flex flex-wrap gap-6 md:gap-10 mt-4">
+                {trustMetrics.map(({ stat, label }, i) => (
+                  <div key={label} className="flex items-center gap-3">
+                    <div className="h-12 w-12 rounded-full border border-primary/20 flex items-center justify-center text-primary bg-transparent">
+                      {i === 0 ? <Users className="h-5 w-5 stroke-[1.5]" /> : i === 1 ? <Star className="h-5 w-5 stroke-[1.5]" /> : <Truck className="h-5 w-5 stroke-[1.5]" />}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-primary text-lg leading-tight">{stat}</span>
+                      <span className="text-xs text-muted-foreground font-medium">{label}</span>
+                    </div>
                   </div>
                 ))}
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                <Link href="/contact" className={buttonVariants({ size: "lg" })}>
-                  Request Quote
+              
+              <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                <Link href="/contact" className={buttonVariants({ size: "lg", className: "gap-2 shadow-md w-fit" })}>
+                  Request Quote <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/collections"
-                  className={buttonVariants({ size: "lg", variant: "outline" })}
+                  className={buttonVariants({ size: "lg", variant: "outline", className: "gap-2 bg-transparent border-primary/20 hover:bg-primary/5 w-fit" })}
                 >
-                  Design Your Bag
+                  Design Your Bag <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
-            <div className="relative aspect-square md:aspect-[4/3] w-full h-[400px] md:h-[500px] lg:h-[600px]">
-              <HeroBags />
-            </div>
+            {/* Empty right column since Main_Background.png covers it */}
+            <div className="hidden md:block"></div>
           </div>
         </div>
       </section>
 
       {/* About Preview */}
-      <FadeSection className="py-24">
+      <FadeSection className="py-24 bg-gradient-to-b from-primary/10 via-primary/5 to-background dark:from-primary/5 dark:to-background">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg order-2 md:order-1">
               <Image
-                src="/images/about-1.jpg"
+                src="/purple-bag1.png"
                 alt="Purple Bags crafting process and manufacturing"
                 fill
                 className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
               />
             </div>
             <div className="flex flex-col gap-6 order-1 md:order-2">
-              <h2 className="font-heading text-3xl md:text-4xl font-bold">
+              <h2 className="font-playfair text-3xl md:text-[40px] leading-tight font-medium text-foreground/90">
                 Crafting Wedding Bags With Passion Since 2019
               </h2>
               <p className="text-muted-foreground text-lg">
@@ -204,10 +229,10 @@ export default function Home() {
       </FadeSection>
 
       {/* Collections Showcase */}
-      <FadeSection className="py-24 bg-zinc-50 dark:bg-zinc-950">
+      <FadeSection className="py-24 bg-gradient-to-b from-background to-primary/5 dark:from-background dark:to-primary/5">
         <div className="container mx-auto px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="font-playfair text-4xl md:text-[46px] leading-tight font-medium mb-8 text-center text-foreground/90">
               Explore Our Collections
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -216,7 +241,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
             {featuredCollections.map((collection, i) => (
               <motion.div
                 key={collection.title}
@@ -231,6 +256,7 @@ export default function Home() {
                       src={collection.src}
                       alt={collection.alt}
                       fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
@@ -260,7 +286,7 @@ export default function Home() {
       <FadeSection className="py-24 bg-primary/5">
         <div className="container mx-auto px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="font-playfair text-4xl md:text-[46px] leading-tight font-medium mb-8 text-center text-foreground/90">
               Why Families Choose Purple Bags
             </h2>
           </div>
@@ -298,7 +324,7 @@ export default function Home() {
           {/* heading */}
           <div className="text-center mb-16">
             <p className="text-xs uppercase tracking-[0.25em] text-primary/60 mb-2">Real stories</p>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground">
+            <h2 className="font-playfair text-4xl md:text-[46px] leading-tight font-medium mb-8 text-center text-foreground/90">
               real results.
             </h2>
           </div>
