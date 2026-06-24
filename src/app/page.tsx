@@ -306,7 +306,7 @@ export default function Home() {
                 <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                   {icon}
                 </div>
-                <h3 className="font-bold text-lg">{title}</h3>
+                <h3 className=" text-2xl font-medium tracking-tight">{title}</h3>
                 <p className="text-sm text-muted-foreground">{desc}</p>
               </motion.div>
             ))}

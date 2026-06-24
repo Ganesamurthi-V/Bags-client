@@ -44,7 +44,7 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <div className="flex flex-col min-h-screen pt-12 pb-24">
+    <div className="flex flex-col min-h-screen pt-28 md:pt-32 pb-24">
       <div className="container mx-auto px-4 md:px-8 max-w-3xl">
         <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-center">
           Frequently Asked Questions

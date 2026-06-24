@@ -11,7 +11,7 @@ const processSteps = [
 
 export default function About() {
   return (
-    <div className="flex flex-col min-h-screen pt-12 pb-24">
+    <div className="flex flex-col min-h-screen pt-28 md:pt-32 pb-24">
       <div className="container mx-auto px-4 md:px-8">
         <h1 className="font-playfair text-4xl md:text-[46px] leading-tight font-medium mb-8 text-center text-foreground/90">
           Crafting Wedding Bags With Passion Since 2019

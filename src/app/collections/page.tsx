@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { collections } from "@/data/collections";
 import type { Collection } from "@/data/collections";
 
-const categories = ["All", "Jute", "Cotton", "Fabric", "Premium", "Non-Woven"] as const;
+const categories = ["All", "Bottle Bags", "Fabric Tote", "Jute Tote Bag", "Mini Jute Bag", "Potli Bags", "Sling & Shoulder Bag"] as const;
 type Filter = (typeof categories)[number];
 
 export default function Collections() {
@@ -19,7 +19,7 @@ export default function Collections() {
       : collections.filter((c) => c.category === active);
 
   return (
-    <div className="flex flex-col min-h-screen pt-12 pb-24">
+    <div className="flex flex-col min-h-screen pt-28 md:pt-32 pb-24">
       <div className="container mx-auto px-4 md:px-8">
         {/* Header */}
         <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-center">

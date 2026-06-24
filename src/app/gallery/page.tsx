@@ -62,7 +62,7 @@ export default function Gallery() {
     active === "All" ? galleryItems : galleryItems.filter((g) => g.category === active);
 
   return (
-    <div className="flex flex-col min-h-screen pt-12 pb-24">
+    <div className="flex flex-col min-h-screen pt-28 md:pt-32 pb-24">
       <div className="container mx-auto px-4 md:px-8">
         {/* Header */}
         <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-center">
