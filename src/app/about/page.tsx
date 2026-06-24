@@ -26,7 +26,7 @@ export default function About() {
               India.
             </p>
             <p className="text-lg text-muted-foreground">
-              With more than 1000 satisfied customers and years of manufacturing
+              With more than 100 satisfied customers and years of manufacturing
               expertise, we transform ideas into elegant wedding bags that leave
               lasting impressions.
             </p>

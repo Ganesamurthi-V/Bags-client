@@ -9,6 +9,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-heading: var(--font-felipa);
+  --font-lora: var(--font-lora-next);
+  --font-caveat: var(--font-caveat-next);
   --font-playfair: var(--font-playfair);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

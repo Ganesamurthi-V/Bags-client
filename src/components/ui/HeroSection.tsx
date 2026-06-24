@@ -88,20 +88,23 @@ export function HeroSection() {
                     {i === 0 ? <Users className="h-5 w-5 stroke-[1.5]" /> : i === 1 ? <Star className="h-5 w-5 stroke-[1.5]" /> : <Truck className="h-5 w-5 stroke-[1.5]" />}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-primary text-lg leading-tight">{stat}</span>
-                    <span className="text-xs text-muted-foreground font-medium">{label}</span>
+                    <span className="font-caveat font-bold text-primary text-3xl leading-tight tracking-tight">{stat}</span>
+                    <span className="font-caveat text-xl text-muted-foreground font-medium">{label}</span>
                   </div>
                 </div>
               ))}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <Link href="/contact" className={buttonVariants({ size: "lg", className: "gap-2 shadow-md w-fit" })}>
+              <Link 
+                href="/contact" 
+                className={buttonVariants({ size: "lg", variant: "outline", className: "gap-2 bg-transparent border-primary/20 hover:bg-primary/5 w-fit" })}
+              >
                 Request Quote <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 href="/collections"
-                className={buttonVariants({ size: "lg", variant: "outline", className: "gap-2 bg-transparent border-primary/20 hover:bg-primary/5 w-fit" })}
+                className={buttonVariants({ size: "lg", className: "gap-2 shadow-md w-fit" })}
               >
                 Design Your Bag <ArrowRight className="h-4 w-4" />
               </Link>
