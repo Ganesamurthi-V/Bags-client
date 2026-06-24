@@ -22,7 +22,7 @@ export default function Collections() {
     <div className="flex flex-col min-h-screen pt-28 md:pt-32 pb-24">
       <div className="container mx-auto px-4 md:px-8">
         {/* Header */}
-        <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-center">
+        <h1 className="text-3xl md:text-4xl lg:text-[60px] font-medium tracking-tight text-center leading-tight">
           Explore Our Collections
         </h1>
         <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">

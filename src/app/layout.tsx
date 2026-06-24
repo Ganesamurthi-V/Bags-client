@@ -66,7 +66,7 @@ export default function RootLayout({
         <LenisProvider>
           <Providers>
             <Header />
-            <main className="flex-grow pt-16">
+            <main className="flex-grow">
               {children}
             </main>
             <Footer />
