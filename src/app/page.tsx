@@ -1,17 +1,16 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
+import { ArrowRight, CheckCircle2, Truck, Factory, ShieldCheck } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, Truck, Factory, ShieldCheck, Star, Users } from "lucide-react";
-// Removed HeroBags import since we are using Main_Background.png
-// import { HeroBags } from "@/components/ui/HeroBags";
 
-gsap.registerPlugin(ScrollTrigger);
+import { HeroSection } from "@/components/ui/HeroSection";
+import { FadeSection } from "@/components/ui/FadeSection";
+import { StaggerFade } from "@/components/ui/StaggerFade";
+
+const TestimonialScene = dynamic(
+  () => import("@/components/ui/TestimonialScene").then((mod) => mod.TestimonialScene)
+);
 
 const featuredCollections = [
   {
@@ -32,12 +31,6 @@ const featuredCollections = [
     src: "/images/collection-premium-1.jpg",
     alt: "Premium Fabric Wedding Bag",
   },
-];
-
-const trustMetrics = [
-  { stat: "100+", label: "Happy Customers" },
-  { stat: "7+ Years", label: "Experience" },
-  { stat: "Pan India", label: "Delivery" },
 ];
 
 const whyChooseUs = [
@@ -63,132 +56,10 @@ const whyChooseUs = [
   },
 ];
 
-// Fade-up animation variants
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const } },
-};
-
-function FadeSection({ children, className }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-  return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={fadeUp}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
 export default function Home() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const heroTextRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Hero text animation
-      gsap.fromTo(
-        heroTextRef.current?.children || [],
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-          delay: 0.2,
-        }
-      );
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative w-full overflow-hidden min-h-[90vh] flex items-center pt-24 pb-24 md:pt-32 md:pb-32">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/Main_background.svg"
-            alt="Hero Background"
-            fill
-            sizes="100vw"
-            className="object-cover object-center"
-            priority
-          />
-        </div>
-
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div ref={heroTextRef} className="flex flex-col gap-6 max-w-xl">
-
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-primary/80">
-                  Elegance in Every Stitch
-                </span>
-                <div className="w-12 h-[2px] bg-primary/60"></div>
-              </div>
-
-              <span className="font-heading text-6xl md:text-7xl lg:text-8xl leading-none tracking-tight">
-                <span className="text-primary">Purple</span> <span className="text-foreground/90">Bags</span>
-              </span>
-
-              <h1 className="text-3xl md:text-4xl lg:text-[42px] font-medium tracking-tight text-foreground/80 leading-tight">
-                Custom Wedding Bags<br />Crafted For Your Special Day
-              </h1>
-
-              <div className="flex items-center justify-start gap-3 text-primary/60 my-2">
-                <div className="h-[1px] w-16 bg-primary/30"></div>
-                <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 20C12 20 2.5 13 2.5 7.5C2.5 4.5 4.5 2.5 7.5 2.5C9.5 2.5 11 3.5 12 5.5C13 3.5 14.5 2.5 16.5 2.5C19.5 2.5 21.5 4.5 21.5 7.5C21.5 13 12 20 12 20Z" stroke="currentColor" strokeWidth="1.5" fill="none" />
-                </svg>
-                <div className="h-[1px] w-16 bg-primary/30"></div>
-              </div>
-
-              <p className="text-base text-muted-foreground/90 max-w-md leading-relaxed">
-                Premium customized wedding bags designed with your names, wedding
-                dates, logos, and unique artwork to make every celebration
-                unforgettable.
-              </p>
-
-              <div className="flex flex-wrap gap-6 md:gap-10 mt-4">
-                {trustMetrics.map(({ stat, label }, i) => (
-                  <div key={label} className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-full border border-primary/20 flex items-center justify-center text-primary bg-transparent">
-                      {i === 0 ? <Users className="h-5 w-5 stroke-[1.5]" /> : i === 1 ? <Star className="h-5 w-5 stroke-[1.5]" /> : <Truck className="h-5 w-5 stroke-[1.5]" />}
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="font-bold text-primary text-lg leading-tight">{stat}</span>
-                      <span className="text-xs text-muted-foreground font-medium">{label}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                <Link href="/contact" className={buttonVariants({ size: "lg", className: "gap-2 shadow-md w-fit" })}>
-                  Request Quote <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/collections"
-                  className={buttonVariants({ size: "lg", variant: "outline", className: "gap-2 bg-transparent border-primary/20 hover:bg-primary/5 w-fit" })}
-                >
-                  Design Your Bag <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-            {/* Empty right column since Main_Background.png covers it */}
-            <div className="hidden md:block"></div>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* About Preview */}
       <FadeSection className="py-24 bg-gradient-to-b from-primary/10 via-primary/5 to-background dark:from-primary/5 dark:to-background">
@@ -244,13 +115,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
             {featuredCollections.map((collection, i) => (
-              <motion.div
-                key={collection.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-              >
+              <StaggerFade key={collection.title} delay={i * 0.1}>
                 <Link href="/collections" className="group flex flex-col gap-4">
                   <div className="aspect-[4/5] rounded-2xl overflow-hidden relative shadow-md">
                     <Image
@@ -258,7 +123,6 @@ export default function Home() {
                       alt={collection.alt}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      priority={i < 3}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
@@ -269,7 +133,7 @@ export default function Home() {
                     <p className="text-sm text-muted-foreground">{collection.desc}</p>
                   </div>
                 </Link>
-              </motion.div>
+              </StaggerFade>
             ))}
           </div>
 
@@ -295,20 +159,17 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {whyChooseUs.map(({ icon, title, desc }, i) => (
-              <motion.div
+              <StaggerFade
                 key={title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.4 }}
+                delay={i * 0.1}
                 className="flex flex-col items-center text-center gap-4"
               >
                 <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                   {icon}
                 </div>
-                <h3 className=" text-2xl font-medium tracking-tight">{title}</h3>
+                <h3 className="text-2xl font-medium tracking-tight">{title}</h3>
                 <p className="text-sm text-muted-foreground">{desc}</p>
-              </motion.div>
+              </StaggerFade>
             ))}
           </div>
         </div>
@@ -316,14 +177,12 @@ export default function Home() {
 
       {/* ── Testimonials ── */}
       <FadeSection className="relative py-28 overflow-hidden bg-[#f5f0ff] dark:bg-zinc-950">
-        {/* soft ambient blobs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-primary/8 blur-3xl" />
           <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-violet-300/10 blur-3xl" />
         </div>
 
         <div className="relative container mx-auto px-4 md:px-8">
-          {/* heading */}
           <div className="text-center mb-16">
             <p className="text-sm uppercase tracking-[0.25em] text-primary/60 mb-2">Real stories</p>
             <h2 className="text-3xl md:text-4xl lg:text-[60px] font-medium tracking-tight text-foreground leading-tight">
@@ -334,242 +193,6 @@ export default function Home() {
           <TestimonialScene />
         </div>
       </FadeSection>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════
-   DATA
-═══════════════════════════════════════ */
-interface Testimonial {
-  id: number;
-  name: string;
-  city: string;
-  role: string;
-  img: string;
-  review: string;
-  rating: number;
-  floatDuration: number;
-  floatDelay: number;
-  floatDistance: number;
-}
-
-const TESTIMONIALS: Testimonial[] = [
-  {
-    id: 0,
-    name: "Priya & Rahul",
-    city: "Chennai",
-    role: "Traditional Hindu Wedding",
-    img: "/images/gallery-1.jpg",
-    review: "The customized jute bags were absolutely perfect for our wedding. Print quality was excellent and delivery was right on time. Every guest loved them!",
-    rating: 5,
-    floatDuration: 5.2,
-    floatDelay: 0,
-    floatDistance: 12,
-  },
-  {
-    id: 1,
-    name: "Sneha Reddy",
-    city: "Hyderabad",
-    role: "Telugu Wedding",
-    img: "/images/gallery-4.jpg",
-    review: "We ordered 500 premium cotton bags with our wedding logo. The fabric quality is top-notch and the team guided us beautifully through every step.",
-    rating: 5,
-    floatDuration: 6.8,
-    floatDelay: 0.8,
-    floatDistance: 16,
-  },
-  {
-    id: 2,
-    name: "Arun Kumar",
-    city: "Bangalore",
-    role: "South Indian Wedding",
-    img: "/images/gallery-7.jpg",
-    review: "Purple Bags delivered exactly what they promised. The finishing on the bags is very professional. Will definitely order again for future family events.",
-    rating: 5,
-    floatDuration: 4.6,
-    floatDelay: 1.4,
-    floatDistance: 10,
-  },
-  {
-    id: 3,
-    name: "Divya & Karthik",
-    city: "Coimbatore",
-    role: "Tamil Brahmin Wedding",
-    img: "/images/gallery-10.jpg",
-    review: "Our names were printed beautifully on the jute bags. The colours were vibrant and delivery was faster than expected. Highly recommend Purple Bags!",
-    rating: 5,
-    floatDuration: 7.4,
-    floatDelay: 0.4,
-    floatDistance: 18,
-  },
-  {
-    id: 4,
-    name: "Meera S",
-    city: "Kochi",
-    role: "Kerala Christian Wedding",
-    img: "/images/gallery-14.jpg",
-    review: "Our guests were so impressed with the premium fabric bags. The customization options are endless and the quality exceeded our expectations completely.",
-    rating: 5,
-    floatDuration: 5.8,
-    floatDelay: 1.8,
-    floatDistance: 14,
-  },
-  {
-    id: 5,
-    name: "Anand Patel",
-    city: "Mumbai",
-    role: "Gujarati Wedding",
-    img: "/images/gallery-20.jpg",
-    review: "Ordered from Mumbai and received the bags well before the wedding date. Pan India delivery was seamless. Very happy with the overall quality and service.",
-    rating: 5,
-    floatDuration: 6.2,
-    floatDelay: 1.1,
-    floatDistance: 13,
-  },
-];
-
-/* ═══════════════════════════════════════
-   SCATTERED BUBBLE LAYOUT
-═══════════════════════════════════════ */
-interface BubbleLayout {
-  size: number;
-  top: string;
-  left?: string;
-  right?: string;
-  tooltipPos: "left" | "right";
-}
-
-const SCATTER_LAYOUTS: BubbleLayout[] = [
-  { size: 96, top: "15%", left: "15%", tooltipPos: "right" },
-  { size: 110, top: "55%", left: "8%", tooltipPos: "right" },
-  { size: 105, top: "10%", left: "45%", tooltipPos: "right" },
-  { size: 85, top: "70%", left: "35%", tooltipPos: "right" },
-  { size: 100, top: "25%", right: "15%", tooltipPos: "left" },
-  { size: 90, top: "65%", right: "10%", tooltipPos: "left" },
-];
-
-/* ═══════════════════════════════════════
-   SCENE COMPONENT
-═══════════════════════════════════════ */
-function TestimonialScene() {
-  // Open the 3rd bubble (middle top) by default so users see the tooltip feature
-  const [hoveredId, setHoveredId] = useState<number | null>(TESTIMONIALS[2].id);
-  const [hasInteracted, setHasInteracted] = useState(false);
-
-  const handleMouseEnter = (id: number) => {
-    if (!hasInteracted) setHasInteracted(true);
-    setHoveredId(id);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredId(null);
-  };
-
-  return (
-    <div
-      className="relative mx-auto py-8"
-      style={{ minHeight: 600, maxWidth: 1100 }}
-    >
-      {TESTIMONIALS.map((t, i) => {
-        const layout = SCATTER_LAYOUTS[i];
-        const isHovered = hoveredId === t.id;
-
-        return (
-          <motion.div
-            key={`scatter-${t.id}`}
-            style={{
-              position: "absolute",
-              top: layout.top,
-              left: layout.left,
-              right: layout.right,
-              zIndex: isHovered ? 50 : 10,
-            }}
-            onMouseEnter={() => handleMouseEnter(t.id)}
-            onMouseLeave={handleMouseLeave}
-          >
-            {/* Floating animation wrapper */}
-            <motion.div
-              animate={{ y: [0, -t.floatDistance, 0] }}
-              transition={{
-                duration: t.floatDuration,
-                delay: t.floatDelay,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="relative flex items-center"
-            >
-              {/* Bubble */}
-              <motion.div
-                className="relative rounded-full overflow-hidden cursor-pointer flex-shrink-0"
-                style={{ width: layout.size, height: layout.size }}
-                animate={{
-                  boxShadow: isHovered
-                    ? "0 0 35px 10px rgba(107,13,173,0.3)"
-                    : "0 8px 20px rgba(0,0,0,0.08)",
-                  scale: isHovered ? 1.05 : 1,
-                  borderColor: isHovered ? "rgba(107,13,173,0.5)" : "rgba(255,255,255,0.8)",
-                  borderWidth: isHovered ? "3px" : "2px"
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <Image
-                  src={t.img}
-                  alt={t.name}
-                  fill
-                  className="object-cover"
-                  sizes={`${layout.size}px`}
-                />
-              </motion.div>
-
-              {/* Tooltip Review Box */}
-              <AnimatePresence>
-                {isHovered && (
-                  <motion.div
-                    initial={{ opacity: 0, x: layout.tooltipPos === "right" ? -8 : 8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: layout.tooltipPos === "right" ? -8 : 8 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                    className="absolute py-3.5 px-5 w-[380px] pointer-events-none"
-                    style={{
-                      [layout.tooltipPos === "right" ? "left" : "right"]: "calc(100% + 12px)",
-                      background: "rgba(255, 255, 255, 0.25)",
-                      backdropFilter: "blur(10px)",
-                      WebkitBackdropFilter: "blur(10px)",
-                      borderRadius: "6px",
-                      border: "1px solid rgba(255, 255, 255, 0.3)",
-                      boxShadow: "0 6px 20px rgba(0,0,0,0.06)"
-                    }}
-                  >
-                    {/* Stars */}
-                    <div className="flex gap-1 mb-1.5">
-                      {Array.from({ length: t.rating }).map((_, s) => (
-                        <Star key={s} className="h-3 w-3 text-amber-500 fill-amber-500" />
-                      ))}
-                    </div>
-
-                    {/* Review text */}
-                    <p className="text-foreground/95 text-[13px] leading-relaxed mb-2.5 font-[family-name:var(--font-playfair)] italic">
-                      &ldquo;{t.review}&rdquo;
-                    </p>
-
-                    {/* Customer Info */}
-                    <div className="flex items-center gap-2">
-                      <p className="text-[9px] font-bold text-foreground tracking-[0.15em] uppercase font-[family-name:var(--font-montserrat)]">
-                        {t.name}
-                      </p>
-                      <span className="text-[9px] text-muted-foreground/40">|</span>
-                      <p className="text-[8px] text-muted-foreground uppercase tracking-[0.2em] font-[family-name:var(--font-montserrat)]">
-                        {t.city}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          </motion.div>
-        );
-      })}
     </div>
   );
 }
