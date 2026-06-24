@@ -8,7 +8,7 @@ import { StaggerFade } from "@/components/ui/StaggerFade";
 import { collections } from "@/data/collections";
 import type { Collection } from "@/data/collections";
 
-const categories = ["All", "Bottle Bags", "Fabric Tote", "Jute Tote Bag", "Mini Jute Bag", "Potli Bags", "Sling & Shoulder Bag"] as const;
+const categories = ["All", "Bottle Bags", "Fabric Tote", "Jute Tote Bag", "Wedding Bag", "Potli Bags", "Sling & Shoulder Bag"] as const;
 type Filter = (typeof categories)[number];
 
 export default function Collections() {
