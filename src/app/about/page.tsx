@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Founded in 2019 by Pregadeeswari S, Purple Bags is a Puducherry-based manufacturer of custom wedding bags — from consultation and design to manufacturing, quality inspection, and Pan India delivery.",
+  alternates: { canonical: "/about" },
+};
 
 const processSteps = [
   { step: "1", title: "Consultation", desc: "We discuss your needs and preferences." },
@@ -38,7 +46,7 @@ export default function About() {
           </div>
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg">
             <Image
-              src="/purple-bag1.png"
+              src="/purple-bag1.webp"
               alt="Purple Bags manufacturing and crafting process"
               fill
               className="object-cover"
