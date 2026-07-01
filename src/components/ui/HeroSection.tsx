@@ -40,8 +40,8 @@ export function HeroSection() {
     <section ref={heroRef} className="relative w-full overflow-hidden min-h-[90vh] flex items-center pt-24 pb-24 md:pt-32 md:pb-32">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/Main_background.svg"
-          alt="Hero Background"
+          src="/hero-bg.webp"
+          alt="Elegant custom wedding bags by Purple Bags"
           fill
           sizes="100vw"
           className="object-cover object-center"

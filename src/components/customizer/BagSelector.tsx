@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { useCustomizer } from "./CustomizerContext";
 import { collections } from "@/data/collections";
 import { Label } from "@/components/ui/label";
@@ -44,11 +45,11 @@ export function BagSelector() {
           <div
             key={bag.id}
             onClick={() => setActiveBagImg(bag.img)}
-            className={`cursor-pointer border rounded-md overflow-hidden aspect-square bg-white hover:border-primary transition-colors ${
+            className={`relative cursor-pointer border rounded-md overflow-hidden aspect-square bg-white hover:border-primary transition-colors ${
               activeBagImg === bag.img ? "border-primary ring-2 ring-primary/20" : "border-border"
             }`}
           >
-            <img src={bag.img} alt={bag.category} className="w-full h-full object-contain p-2" />
+            <Image src={bag.img} alt={bag.category} fill sizes="120px" className="object-contain p-2" />
           </div>
         ))}
         {/* Custom Bag Upload Button */}

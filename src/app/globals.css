@@ -2,13 +2,21 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@font-face {
+  font-family: "Reign";
+  src: url("/fonts/Reign.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
-  --font-heading: var(--font-felipa);
+  --font-heading: "Reign", var(--font-felipa);
   --font-lora: var(--font-lora-next);
   --font-caveat: var(--font-caveat-next);
   --font-playfair: var(--font-playfair);

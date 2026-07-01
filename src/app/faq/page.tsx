@@ -1,50 +1,26 @@
+import type { Metadata } from "next";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { faqs } from "@/lib/faqs";
+import { faqSchema } from "@/lib/schema";
 
-const faqs = [
-  {
-    id: "faq-1",
-    question: "What is the minimum order quantity?",
-    answer: "Our minimum order quantity starts at 100 bags.",
-  },
-  {
-    id: "faq-2",
-    question: "Can I customize the design?",
-    answer:
-      "Yes. You can customize names, wedding dates, logos, colors, fonts, and artwork.",
-  },
-  {
-    id: "faq-3",
-    question: "Do you deliver across India?",
-    answer: "Yes. We provide safe and timely Pan India delivery.",
-  },
-  {
-    id: "faq-4",
-    question: "Can I upload my own design?",
-    answer:
-      "Absolutely. You can upload logos, images, and complete artwork files in our design customizer.",
-  },
-  {
-    id: "faq-5",
-    question: "What printing methods are available?",
-    answer:
-      "We offer Screen Printing, Offset Printing, and DTF Printing.",
-  },
-  {
-    id: "faq-6",
-    question: "How long does production take?",
-    answer:
-      "Production timelines vary depending on order quantity and customization requirements, but we always aim for fast turnaround times.",
-  },
-];
+export const metadata: Metadata = {
+  title: "Frequently Asked Questions",
+  description:
+    "Answers to common questions about Purple Bags — minimum order quantity, customization, printing methods, Pan India delivery, and production timelines.",
+  alternates: { canonical: "/faq" },
+};
 
 export default function FAQ() {
   return (
     <div className="flex flex-col min-h-screen pt-28 md:pt-32 pb-24">
+      {/* FAQPage structured data — drives FAQ rich results and AI answer citations. */}
+      <JsonLd schema={faqSchema(faqs)} />
       <div className="container mx-auto px-4 md:px-8 max-w-3xl">
         <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-center">
           Frequently Asked Questions

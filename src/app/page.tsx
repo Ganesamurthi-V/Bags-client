@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+
+// Home keeps the root layout's default title/description; it only needs to
+// claim its own canonical (now that the root no longer sets one globally).
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 import { ArrowRight, CheckCircle2, Truck, Factory, ShieldCheck } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -67,7 +74,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg order-2 md:order-1">
               <Image
-                src="/purple-bag1.png"
+                src="/purple-bag1.webp"
                 alt="Purple Bags crafting process and manufacturing"
                 fill
                 className="object-cover"
